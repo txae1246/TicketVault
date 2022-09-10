@@ -3,14 +3,28 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'reac
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useState } from 'react';
 import concertImage from './assets/concert.png';
-
+  
 export default function App() {
+
+SplashScreen.preventAutoHideAsync();
+  setTimeout(SplashScreen.hideAsync, 2000);
+
   const [isChanged, setIsChanged] = useState(false);
   const [numberOfTickets, setNumberOfTickets] = useState(null);
-  var ticketCost = (numberOfTickets * 99.99).toFixed(2);
 
-  SplashScreen.preventAutoHideAsync();
-  setTimeout(SplashScreen.hideAsync, 2000);
+  function showTotalCost() {
+    setIsChanged(true);
+  }
+
+  function hideTotalCost() {
+    setIsChanged(false);
+  }
+
+  function calculateCost() {
+    let ticketCost = (numberOfTickets * 99.99).toFixed(2);
+    let ticketCostString = "Ticket Cost:  $" + ticketCost;
+    return ticketCostString;
+  }
 
   return (
     
@@ -25,13 +39,14 @@ export default function App() {
           onChangeText={setNumberOfTickets}
           value={numberOfTickets}
           keyboardType="numeric"
+          onChange={hideTotalCost}
         />
       </View>
       <View style={styles.buttonSection}>
       <TouchableOpacity 
           style={styles.button}
           onPress={() => {
-            setIsChanged(true);
+            showTotalCost();
         }}
         >
           <Text style={styles.buttonText}>Find the Cost</Text>
@@ -39,7 +54,7 @@ export default function App() {
       </View>
       <View style={styles.costSection}>
         <Text style={styles.costText}>
-          {isChanged ? "Ticket Cost:  $" + ticketCost : null}
+          {isChanged ? calculateCost() : null}
         </Text>
       </View>
       <View style={styles.bottomSection}>
@@ -115,4 +130,5 @@ const styles = StyleSheet.create({
     flexGrow:  1,
     margin:  10,
   }
-});
+});  
+    
